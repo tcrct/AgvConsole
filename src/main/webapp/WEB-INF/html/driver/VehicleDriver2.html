@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>控制中心</title>
+    <!-- dhtmlxLayout -->
+    <link rel="stylesheet" type="text/css" href="../../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxlayout.css">
+    <link rel="stylesheet" type="text/css" href="../../plugins/dhtmlx/dhtmlxLayout/codebase/skins/dhtmlxlayout_dhx_skyblue.css">
+    <script src="../../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxcommon.js"></script>
+    <script src="../../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxlayout.js"></script>
+    <script src="../../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxcontainer.js"></script>
+    <!-- grid -->
+    <link rel="stylesheet" type="text/css" href="../../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.css">
+    <link rel="stylesheet" type="text/css" href="../../plugins/dhtmlx/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_skyblue.css">
+    <script src="../../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
+    <script src="../../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
+</head>
+<body onload="doOnLoad();">
+<div id="parentId" style="position: relative; top: 20px; left: 20px; width: 600px; height: 400px; aborder: #B5CDE4 1px solid;"></div>
+</body>
+<script>
+    var dhxLayout, dhxGrid;
+    function doOnLoad() {
+        dhxLayout = new dhtmlXLayoutObject("parentId", "2U");
+        dhxLayout.cells("a").setText("车辆模型");
+        dhxLayout.cells("a").setWidth(350);
+        //隐藏头部信息
+        // dhxLayout.cells("a").hideHeader();
+        // 不可拖动窗口大小
+        dhxLayout.cells("a").fixSize(true, true)
+        dhxLayout.cells("b").setText("车辆详细信息");
+        dhxGrid = dhxLayout.cells("a").attachGrid();
+        dhxGrid.setSkin("dhx_skyblue");
+        dhxGrid.attachEvent("onRowDblClicked", doOnRowDblClicked);
+        dhxGrid.setImagePath("../../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
+        dhxGrid.loadXML("../../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
+    }
+    function doOnRowDblClicked(rowId) {
+        console.log("双击行： " + rowId)
+    }
+</script>
+</html>

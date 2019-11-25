@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>控制中心</title>
+    <!-- tabbar -->
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxTabbar/codebase/dhtmlxtabbar.css">
+    <script  src="../plugins/dhtmlx/dhtmlxTabbar/codebase/dhtmlxcommon.js"></script>
+    <script  src="../plugins/dhtmlx/dhtmlxTabbar/codebase/dhtmlxtabbar.js"></script>
+    <script src="../plugins/dhtmlx/dhtmlxTabbar/codebase/dhtmlxcontainer.js" type="text/javascript"></script>
+    <!-- dhtmlxLayout -->
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxlayout.css">
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxLayout/codebase/skins/dhtmlxlayout_dhx_skyblue.css">
+    <script src="../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxcommon.js"></script>
+    <script src="../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxlayout.js"></script>
+    <script src="../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxcontainer.js"></script>
+    <!-- grid -->
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.css">
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_skyblue.css">
+    <script src="../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
+    <script src="../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
+    <!-- form -->
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxForm/codebase/skins/dhtmlxform_dhx_skyblue.css">
+    <script src="../plugins/dhtmlx/dhtmlxForm/codebase/dhtmlxcommon.js"></script>
+    <script src="../plugins/dhtmlx/dhtmlxForm/codebase/dhtmlxform.js"></script>
+    <script src="../plugins/dhtmlx/dhtmlxForm/codebase/ext/dhtmlxform_item_container.js"></script>
+</head>
+<body onload="doOnLoad()">
+<div id="a_tabbar" style="width:900px; height:490px;"></div>
+<div id="myForm" style="height:500px; visibility: hidden">
+    <ul class="dhtmlxForm" name="myForm" oninit="doOnFormInit">
+        <li ftype="settings" position="label-left" labelWidth="100" inputWidth="120"></li>
+        <li ftype="fieldset" name="data" inputWidth="auto">
+            适配器状态
+            <ul>
+                <input type="checkbox">
+                <li ftype="checkbox"  name="type" labelWidth="auto" position="label-right" checked="true">
+                    启用适配器
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<script>
+    function doOnLoad() {
+
+        var tabbar, dhxLayout, dhxGrid;
+        tabbar = new dhtmlXTabBar("a_tabbar", "top");
+        // tabbar.setHrefMode("iframes-on-demand");
+        tabbar.setSkin('dhx_skyblue');
+        tabbar.setImagePath("../plugins/dhtmlx/dhtmlxTabbar/codebase/imgs/");
+        tabbar.enableForceHiding(1);
+        tabbar.addTab("a1", "日志记录", "100px");
+        tabbar.addTab("a2", "车辆驱动程序", "100px");
+        var logGrid = tabbar.cells("a1").attachGrid();
+        logGrid.setImagePath("../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
+        logGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
+
+        dhxLayout = tabbar.cells("a2").attachLayout("2U");
+        dhxLayout.cells("a").setText("车辆模型");
+        dhxLayout.cells("a").setWidth(350);
+        //隐藏头部信息
+        // dhxLayout.cells("a").hideHeader();
+        // 不可拖动窗口大小
+        dhxLayout.cells("a").fixSize(true, true)
+        dhxGrid = dhxLayout.cells("a").attachGrid();
+        dhxGrid.setSkin("dhx_skyblue");
+        dhxGrid.attachEvent("onRowDblClicked", doOnRowDblClicked);
+        dhxGrid.setImagePath("../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
+        dhxGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
+
+        dhxLayout.cells("b").setText("车辆详细信息");
+        dhxLayout.cells("b").setWidth(550);
+        var vehicleDetailedTabbar = dhxLayout.cells("b").attachTabbar();
+        vehicleDetailedTabbar.setSkin('dhx_skyblue');
+        vehicleDetailedTabbar.setImagePath("../plugins/dhtmlx/dhtmlxTabbar/codebase/imgs/");
+        // vehicleDetailedTabbar.enableForceHiding(1);
+        vehicleDetailedTabbar.addTab("a1","车辆详细信息", 100);
+        vehicleDetailedTabbar.setTabActive("a1");
+        var formHtml = document.getElementById("myForm").innerHTML;
+        // console.log(formHtml);
+        vehicleDetailedTabbar.setContentHTML("a1",formHtml);
+        // var detailForm = vehicleDetailedTabbar.cells("a1").attachForm();
+        // detailForm.loadStruct("../plugins/dhtmlx/common/dhxform2.xml?etc=" + new Date().getTime());
+
+        tabbar.setTabActive("a2");
+    }
+
+    function doOnRowDblClicked(rowId) {
+        console.log("双击行： " + rowId)
+    }
+</script>
+</body>
+</html>

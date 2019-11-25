@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>控制中心</title>
+    <!-- form -->
+    <link rel="stylesheet" type="text/css" href="../../plugins/dhtmlx/dhtmlxForm/codebase/skins/dhtmlxform_dhx_skyblue.css">
+    <script src="../../plugins/dhtmlx/dhtmlxForm/codebase/dhtmlxcommon.js"></script>
+    <script src="../../plugins/dhtmlx/dhtmlxForm/codebase/dhtmlxform.js"></script>
+    <script src="../../plugins/dhtmlx/dhtmlxForm/codebase/ext/dhtmlxform_item_container.js"></script>
+    <!-- grid -->
+    <link rel="stylesheet" type="text/css" href="../../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.css">
+    <link rel="stylesheet" type="text/css" href="../../plugins/dhtmlx/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_skyblue.css">
+    <script src="../../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
+    <script src="../../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
+    <style>
+        .dhxform_obj_dhx_skyblue fieldset.dhxform_fs {
+            border: #a4bed4 1px solid;
+            margin-top: 5px;
+            padding: 0px 0px 5px 5px;
+            adisplay: inline;
+            clear: left;
+            width: 100%;
+        }
+        .dhxform_obj_dhx_skyblue div.dhxform_base_nested {
+            padding: 0px 0px 0px 0px;
+            clear: both;
+        }
+        .dhxform_obj_dhx_skyblue div.dhxform_item_label_right div.dhxform_control {
+            float: left;
+            margin-right: -5px;
+            margin-left: 0px;
+        }
+    </style>
+</head>
+<body onload="doOnLoad();">
+<table>
+    <tr>
+        <td><div id="vehicleListDiv"></div></td>
+        <td>
+            <div id="vehicleDetailedDiv">
+                <ul class="dhtmlxForm" name="vehicleDetailedDiv" oninit="doOnFormInit">
+                    <li ftype="settings" position="label-left" labelWidth="100" inputWidth="120"></li>
+                    <li ftype="fieldset" name="data" inputWidth="auto">
+                        车辆详细信息
+                        <ul>
+                            <li ftype="radio" name="type" labelWidth="auto" position="label-right" checked="true">
+                                Already have account
+                                <ul>
+                                    <li ftype="input" value="p_rossi">Login</li>
+                                    <li ftype="password" value="123">Password</li>
+                                    <li ftype="checkbox" checked="true">Remember me</li>
+                                </ul>
+                            </li>
+                            <li ftype="radio" name="type" labelWidth="auto" position="label-right">
+                                Not registered yet
+                                <ul>
+                                    <li ftype="input" value="Patricia D. Rossi">Full Name</li>
+                                    <li ftype="input" value="p_rossi@example.com">E-mail Address</li>
+                                    <li ftype="input" value="p_rossi">Login</li>
+                                    <li ftype="password" value="123">Password</li>
+                                    <li ftype="password" value="123">Confirm Password</li>
+                                    <li ftype="checkbox">Subscribe on news</li>
+                                </ul>
+                            </li>
+                            <li ftype="radio" name="type" labelWidth="auto" position="label-right">
+                                Guest login
+                                <ul>
+                                    <li ftype="select">
+                                        Account type
+                                        <ul>
+                                            <li ftype="option" value="admin">Admin</li>
+                                            <li ftype="option" value="org">Organiser</li>
+                                            <li ftype="option" value="poweruser">Power User</li>
+                                            <li ftype="option" value="user">User</li>
+                                        </ul>
+                                    </li>
+                                    <li ftype="checkbox">Show logs window</li>
+                                </ul>
+                            </li>
+                            <li ftype="button" value="Proceed"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+<script>
+    var vehicleListDiv, vehicleListFormData, vehicleListDataGrid;
+    var vehicleDetailedDiv, vehicleDetailedFormData, vehicleDetailedDataGrid;
+    function doOnLoad() {
+        vehicleListFormData = [
+            {type: "settings",position: "label-left"},
+            {type: "fieldset", label: "车辆模型",
+                list: [
+                    {type: "container", name: "vehicleListDiv", inputWidth: 350, inputHeight: 300}
+                ]
+            }
+        ];
+        vehicleListDiv = new dhtmlXForm("vehicleListDiv", vehicleListFormData);
+        vehicleListDataGrid = new dhtmlXGridObject(vehicleListDiv.getContainer("vehicleListDiv"));
+        vehicleListDataGrid.setSkin("dhx_skyblue");
+        vehicleListDataGrid.setImagePath("../../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
+        vehicleListDataGrid.loadXML("../../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
+
+        // enabled/disabled mode see in 04_events/09_container_events.html
+        vehicleListDataGrid.attachEvent("onEditCell", function () {
+            return false;
+        });
+
+        // vehicleDetailedFormData = [
+        //     {type: "settings",position: "label-right"},
+        //     {type: "fieldset", label: "车辆详细信息",
+        //         list: [
+        //             {type: "container", name: "vehicleDetailedDiv", inputWidth: 350, inputHeight: 300}
+        //         ]
+        //     }
+        // ]
+    }
+
+    function doOnFormInit() {
+
+    }
+</script>
+</html>
