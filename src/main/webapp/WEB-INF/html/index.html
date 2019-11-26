@@ -24,26 +24,126 @@
     <script src="../plugins/dhtmlx/dhtmlxForm/codebase/dhtmlxcommon.js"></script>
     <script src="../plugins/dhtmlx/dhtmlxForm/codebase/dhtmlxform.js"></script>
     <script src="../plugins/dhtmlx/dhtmlxForm/codebase/ext/dhtmlxform_item_container.js"></script>
+    <!--combo -->
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxCombo/codebase/dhtmlxcombo.css">
+    <script  src="../plugins/dhtmlx/dhtmlxCombo/codebase/dhtmlxcommon.js"></script>
+    <script  src="../plugins/dhtmlx/dhtmlxCombo/codebase/dhtmlxcombo.js"></script>
+
+    <style>
+        .dhxFieldset {
+            border: #a4bed4 1px solid;
+            margin-top: 5px;
+            padding: 5px;
+            adisplay: inline;
+            clear: left;
+            width: 100%;
+            display: block;
+            margin-inline-start: 2px;
+            margin-inline-end: 2px;
+            padding-block-start: 0.35em;
+            padding-inline-start: 0.75em;
+            padding-inline-end: 0.75em;
+            padding-block-end: 0.625em;
+            min-inline-size: min-content;
+            border-image: initial;
+            height: 75px;
+        }
+        .dhxLegend {
+            font-family: Tahoma;
+            color: #256187;
+            font-size: inherit;
+            font-weight: normal;
+            padding: 0px 4px 1px 4px;
+            text-align: left;
+        }
+        .dhxFieldset td label {
+            padding-right: 5px;
+            width: 30px;
+        }
+        .dhxFieldset td input {
+            width: 80px;
+        }
+        .dhxBtn {
+            ont-size: inherit;
+            font-family: Tahoma;
+            height: 21px;
+            font-size: 12px;
+            margin: 1px 2px;
+            float: left;
+            cursor: default;
+            clear: both;
+            text-align: center;
+        }
+
+    </style>
 </head>
 <body onload="doOnLoad()">
-<div id="a_tabbar" style="width:900px; height:490px;"></div>
-<div id="myForm" style="height:500px; visibility: hidden">
-    <ul class="dhtmlxForm" name="myForm" oninit="doOnFormInit">
-        <li ftype="settings" position="label-left" labelWidth="100" inputWidth="120"></li>
-        <li ftype="fieldset" name="data" inputWidth="auto">
-            适配器状态
-            <ul>
-                <input type="checkbox">
-                <li ftype="checkbox"  name="type" labelWidth="auto" position="label-right" checked="true">
-                    启用适配器
-                </li>
-            </ul>
-        </li>
-    </ul>
+<div id="a_tabbar"></div>
+<div id="myForm" style="display: none" >
+    <table name="myForm" oninit="doOnFormInit" style="font-size: 13px;" border="0px">
+        <tr name="data" inputWidth="auto">
+            <td >
+                <fieldset class="dhxFieldset">
+                    <legend class="dhxLegend">适配器状态</legend>
+                        <table style="padding-top: 13px;">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" style="width: 16px; height: 16px; " id="adapterChbox">
+                                </td>
+                                <td><div style="padding-bottom: 4px" ><label for="adapterChbox">启用适配器</label></div></td>
+                            </tr>
+                        </table>
+                </fieldset>
+            </td>
+            <td style="width: auto;padding-left: 30px;";>
+                <fieldset class="dhxFieldset">
+                    <legend class="dhxLegend">车辆状态</legend>
+                    <table >
+                        <tr>
+                            <td><label>位置</label></td><td><div style="padding-bottom: 5px;" id="combo_position"></div></td>
+                            <td><label style="padding-left: 20px">状态</label></td><td><div style="padding-bottom: 5px;" id="combo_status"></div></td>
+                        </tr>
+                        <tr>
+                            <td><label>能量等级</label></td><td><div style="padding-bottom: 5px;" id="combo_energy"></div></td>
+                            <td><label style="padding-left: 20px">方向</label></td><td><div style="padding-bottom: 5px;" id="combo_direction"></div></td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+            <td style="width:170px; padding-left: 30px; " id="eventDiv">
+            </td>
+        </tr>
+        <tr name="data" inputWidth="auto">
+            <td style="width: auto" colspan="2">
+                <fieldset class="dhxFieldset" style="height: 93px">
+                    <legend class="dhxLegend">车辆属性</legend>
+                    <table>
+                        <tr>
+                            <td  style="padding-bottom: 5px"><label>最大前进速度</label></td><td style="padding-bottom: 5px; padding-right: 35px"><input type="text" value="1000"> mm/s</td>
+                            <td  style="padding-bottom: 5px"><label>加速</label></td><td  style="padding-bottom: 5px"><input type="text" value="500"> mm/s</td>
+                        </tr>
+                        <tr >
+                            <td style="padding-top: 5px"><label>最大后退速度</label></td><td style="padding-top: 5px"><input type="text" value="1000"> mm/s</td>
+                            <td style="padding-top: 5px"><label>减速</label></td><td style="padding-top: 5px"><input type="text" value="-500"> mm/s</td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+            <td style="width:170px; padding-left: 30px; " id="commonDiv"></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div id="messageDiv" style="height: 230px"></div>
+            </td>
+        </tr>
+        </tr>
+    </table>
 </div>
 <script>
-    function doOnLoad() {
+    window.dhx_globalImgPath = "../plugins/dhtmlx/dhtmlxCombo/codebase/imgs/";
+    window.resizeTo(1030, 550);
 
+    function doOnLoad() {
         var tabbar, dhxLayout, dhxGrid;
         tabbar = new dhtmlXTabBar("a_tabbar", "top");
         // tabbar.setHrefMode("iframes-on-demand");
@@ -52,13 +152,14 @@
         tabbar.enableForceHiding(1);
         tabbar.addTab("a1", "日志记录", "100px");
         tabbar.addTab("a2", "车辆驱动程序", "100px");
+        tabbar.setSize(1000, 500)
         var logGrid = tabbar.cells("a1").attachGrid();
         logGrid.setImagePath("../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
         logGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
 
         dhxLayout = tabbar.cells("a2").attachLayout("2U");
         dhxLayout.cells("a").setText("车辆模型");
-        dhxLayout.cells("a").setWidth(350);
+        dhxLayout.cells("a").setWidth(330);
         //隐藏头部信息
         // dhxLayout.cells("a").hideHeader();
         // 不可拖动窗口大小
@@ -70,7 +171,6 @@
         dhxGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
 
         dhxLayout.cells("b").setText("车辆详细信息");
-        dhxLayout.cells("b").setWidth(550);
         var vehicleDetailedTabbar = dhxLayout.cells("b").attachTabbar();
         vehicleDetailedTabbar.setSkin('dhx_skyblue');
         vehicleDetailedTabbar.setImagePath("../plugins/dhtmlx/dhtmlxTabbar/codebase/imgs/");
@@ -82,6 +182,65 @@
         vehicleDetailedTabbar.setContentHTML("a1",formHtml);
         // var detailForm = vehicleDetailedTabbar.cells("a1").attachForm();
         // detailForm.loadStruct("../plugins/dhtmlx/common/dhxform2.xml?etc=" + new Date().getTime());
+
+        var eventFormData = [{
+            type: "settings",
+            position: "label-right",
+            labelHeight: "25"
+        }, {
+            type: "fieldset",
+            label: "事件调度",
+            width: "70",
+            list: [{
+                type: "button",
+                value: "重发协议指令"
+            },{
+                type: "checkbox",
+                label: "暂停车辆"
+            }]
+        }];
+        var eventForm = new dhtmlXForm("eventDiv", eventFormData);
+
+        var commonFormData = [{
+            type: "settings",
+            position: "label-right"
+        } ,{
+            type: "fieldset",
+            label: "命令调度",
+            width: "165",
+            list:[{
+                type: "radio",
+                name:"command",
+                label: "自动模式"
+            },{
+                type: "radio",
+                name:"command",
+                label: "手动模式",
+                list: [{
+                    type:"button",
+                    value: "下一步"
+                }]
+            }]
+        }];
+        var commonForm = new dhtmlXForm("commonDiv", commonFormData);
+
+        var messageGrid = new dhtmlXGridObject("messageDiv");
+        messageGrid.setSkin("dhx_skyblue");
+        messageGrid.setImagePath("../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
+        messageGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
+        messageGrid.init();
+
+        var combo_position = new dhtmlXCombo("combo_position", "alfa2", 80);
+        combo_position.loadXML("../plugins/dhtmlx/common/data.xml");
+
+        var combo_status = new dhtmlXCombo("combo_status", "alfa2", 80);
+        combo_status.loadXML("../plugins/dhtmlx/common/data.xml");
+
+        var combo_energy = new dhtmlXCombo("combo_energy", "alfa2", 80);
+        combo_energy.loadXML("../plugins/dhtmlx/common/data.xml");
+
+        var combo_direction = new dhtmlXCombo("combo_direction", "alfa2", 80);
+        combo_direction.loadXML("../plugins/dhtmlx/common/data.xml");
 
         tabbar.setTabActive("a2");
     }
