@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>控制中心</title>
+    <link type="image/x-icon" href="../static/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlx.css"/>
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlx_ext.css"/>
+    <script type="text/javascript" src="../plugins/dhtmlx/dhtmlx.js" charset="utf-8"></script>
+
+    <style>
+        .dhxFieldset {
+            border: #a4bed4 1px solid;
+            margin-top: 5px;
+            padding: 5px;
+            adisplay: inline;
+            clear: left;
+            width: 100%;
+            display: block;
+            margin-inline-start: 2px;
+            margin-inline-end: 2px;
+            padding-block-start: 0.35em;
+            padding-inline-start: 0.75em;
+            padding-inline-end: 0.75em;
+            padding-block-end: 0.625em;
+            min-inline-size: min-content;
+            border-image: initial;
+            height: 75px;
+        }
+        .dhxLegend {
+            font-family: Tahoma;
+            color: #256187;
+            font-size: inherit;
+            font-weight: normal;
+            padding: 0px 4px 1px 4px;
+            text-align: left;
+        }
+        .dhxFieldset td label {
+            padding-right: 5px;
+            width: 30px;
+        }
+        .dhxFieldset td input {
+            width: 80px;
+        }
+        .dhxBtn {
+            ont-size: inherit;
+            font-family: Tahoma;
+            height: 21px;
+            font-size: 12px;
+            margin: 1px 2px;
+            float: left;
+            cursor: default;
+            clear: both;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body onload="doOnLoad()">
+<div id="a_tabbar"></div>
+<div id="myForm" style="display: none" >
+    <table name="myForm" oninit="doOnFormInit" style="font-size: 13px;" border="0px">
+        <tr name="data" inputWidth="auto">
+            <td >
+                <fieldset class="dhxFieldset">
+                    <legend class="dhxLegend">适配器状态</legend>
+                        <table style="padding-top: 13px;">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" style="width: 16px; height: 16px; " id="adapterChbox">
+                                </td>
+                                <td><div style="padding-bottom: 4px" ><label for="adapterChbox">启用适配器</label></div></td>
+                            </tr>
+                        </table>
+                </fieldset>
+            </td>
+            <td style="width: auto;padding-left: 30px;";>
+                <fieldset class="dhxFieldset">
+                    <legend class="dhxLegend">车辆状态</legend>
+                    <table >
+                        <tr>
+                            <td><label>位置</label></td><td><div style="padding-bottom: 5px;" id="combo_position"></div></td>
+                            <td><label style="padding-left: 20px">状态</label></td><td><div style="padding-bottom: 5px;" id="combo_status"></div></td>
+                        </tr>
+                        <tr>
+                            <td><label>能量等级</label></td><td><div style="padding-bottom: 5px;" id="combo_energy"></div></td>
+                            <td><label style="padding-left: 20px">方向</label></td><td><div style="padding-bottom: 5px;" id="combo_direction"></div></td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+            <td style="width:170px; padding-left: 30px; " id="eventDiv">
+            </td>
+        </tr>
+        <tr name="data" inputWidth="auto">
+            <td style="width: auto" colspan="2">
+                <fieldset class="dhxFieldset" style="height: 93px">
+                    <legend class="dhxLegend">车辆属性</legend>
+                    <table>
+                        <tr>
+                            <td  style="padding-bottom: 5px"><label>最大前进速度</label></td><td style="padding-bottom: 5px; padding-right: 35px"><input type="text" value="1000"> mm/s</td>
+                            <td  style="padding-bottom: 5px"><label>加速</label></td><td  style="padding-bottom: 5px"><input type="text" value="500"> mm/s</td>
+                        </tr>
+                        <tr >
+                            <td style="padding-top: 5px"><label>最大后退速度</label></td><td style="padding-top: 5px"><input type="text" value="1000"> mm/s</td>
+                            <td style="padding-top: 5px"><label>减速</label></td><td style="padding-top: 5px"><input type="text" value="-500"> mm/s</td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+            <td style="width:170px; padding-left: 30px; " id="commonDiv"></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div id="messageDiv" style="height: 230px"></div>
+            </td>
+        </tr>
+        </tr>
+    </table>
+</div>
+<script>
+    // window.dhx_globalImgPath = "../plugins/dhtmlx/dhtmlxCombo/codebase/imgs/";
+    // window.resizeTo(1030, 550);
+
+    function doOnLoad() {
+        var tabbar, dhxLayout, dhxGrid;
+        // dhxLayout = new dhtmlXLayoutObject(document.body, "2U", "dhx_skyblue");
+        // tabbar = dhxLayout.cells("a").attachTabbar();
+        tabbar = new dhtmlXTabBar("a_tabbar", "top");
+        // tabbar.setHrefMode("iframes-on-demand");
+        // tabbar.setSkin('dhx_skyblue');
+        // tabbar.setImagePath("../plugins/dhtmlx/dhtmlxTabbar/codebase/imgs/");
+        // tabbar.enableForceHiding(1);
+        tabbar.addTab("a1", "日志记录", "100px");
+        tabbar.addTab("a2", "车辆驱动程序", "100px");
+        // tabbar.setSize(1000, 500)
+        var logGrid = tabbar.cells("a1").attachGrid();
+        // logGrid.setImagePath("../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
+        logGrid.loadXML("../plugins/dhtmlx/common/grid.json?etc=" + new Date().getTime());
+
+    }
+</script>
+</body>
+</html>

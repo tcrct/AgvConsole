@@ -1,0 +1,83 @@
+html, body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			margin: 0px;
+			background-color: #EBEBEB;
+		}
+		.textDataCssName {
+			height: 100%;
+			overflow: auto;
+			font-size: 14px;
+			font-family:Arial, "Microsoft Yahei", Simsun;
+			font-style: inherit;
+			font-weight: inherit;
+			padding-top: 10px;
+			margin-top: 10px
+		}
+		.clear {clear:both; *display:inline;/*IE only*/}
+		.winVP {
+			position: relative;
+			height: 100px;
+			border: #a4bed4 1px solid;
+			border-radius: 2px;		
+			background-color: #EBEBEB;
+			font-size: 13px;
+			font-family:Arial, "Microsoft Yahei", Simsun;
+			font-style: inherit;
+			font-weight: inherit;
+			color: #333;
+		}
+		.dhxformbtn {
+    		float: left;
+    		height: 24px;
+    		line-height: 23px;
+   	 		margin: 0 20px;
+    		opacity: 1;
+    		overflow: hidden;
+    		text-align: center;
+    		vertical-align: middle;
+    		white-space: nowrap;
+		}
+		
+	  span.tab_find_span {
+			background-image: url("ext/leaf.gif");
+			background-position: 0 0;
+		    background-repeat: no-repeat;
+			position: absolute;
+			left: 5px;
+			width: 15px;
+			top: 3px;
+		    z-index: 1;
+		}
+
+		 span.tab_update_span {
+			background-image: url("ext/paging_page.gif");
+			background-position: 0 0;
+		    background-repeat: no-repeat;
+			position: absolute;
+			left: 5px;
+			width: 15px;
+			top: 3px;
+		    z-index: 1;
+		}
+
+		 span.tab_remove_span {
+			background-image: url("ext/clear.gif");
+			background-position: 0 0;
+		    background-repeat: no-repeat;
+			position: absolute;
+			left: 5px;
+			width: 20px;
+			top: 3px;
+		    z-index: 1;
+		}
+
+		.pl10 {
+			padding-left:10px;
+		}
+
+		.formFontSize {
+			font-size: 12px;
+			font-family:Arial, "Microsoft Yahei", Simsun;
+		}

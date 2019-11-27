@@ -16,8 +16,10 @@
     <script src="../plugins/dhtmlx/dhtmlxLayout/codebase/dhtmlxcontainer.js"></script>
     <!-- grid -->
     <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.css">
+    <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxGrid/codebase/ext/dhtmlxgrid_pgn_bricks.css">
     <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_skyblue.css">
     <script src="../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
+    <script  src="../plugins/dhtmlx/dhtmlxGrid/codebase/ext/dhtmlxgrid_pgn.js"></script>
     <script src="../plugins/dhtmlx/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
     <!-- form -->
     <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxForm/codebase/skins/dhtmlxform_dhx_skyblue.css">
@@ -79,6 +81,8 @@
 </head>
 <body onload="doOnLoad()">
 <div id="a_tabbar"></div>
+<div id="pagingArea"></div>
+
 <div id="myForm" style="display: none" >
     <table name="myForm" oninit="doOnFormInit" style="font-size: 13px;" border="0px">
         <tr name="data" inputWidth="auto">
@@ -141,7 +145,13 @@
 </div>
 <script>
     window.dhx_globalImgPath = "../plugins/dhtmlx/dhtmlxCombo/codebase/imgs/";
-    window.resizeTo(1030, 550);
+    // window.resizeTo(1030, 550);
+    var endPoint = "http://127.0.0.1:9090";
+    var API = {
+        LOG: {
+            INDEX : endPoint + "/log/index"
+        }
+    };
 
     function doOnLoad() {
         var tabbar, dhxLayout, dhxGrid;
@@ -155,7 +165,15 @@
         tabbar.setSize(1000, 500)
         var logGrid = tabbar.cells("a1").attachGrid();
         logGrid.setImagePath("../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
-        logGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
+        // logGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
+        logGrid.loadXML(API.LOG.INDEX+"?etc=" + new Date().getTime());
+        logGrid.enablePaging(true, 20, 5, "pagingArea", true);
+        logGrid.setSkin("dhx_skyblue");
+        logGrid.setPagingSkin("bricks");
+        logGrid.attachFooter("<div>abcd</div>,#cspan,#cspan,#cspan,#cspan");
+        // logGrid.attachFooter("<div>abcd</div>");
+        logGrid.init();
+
 
         dhxLayout = tabbar.cells("a2").attachLayout("2U");
         dhxLayout.cells("a").setText("车辆模型");
