@@ -23,7 +23,6 @@ function initVehicleTable(vehicleName) {
         "vehicleName": vehicleName
     };
     new HttpKit().url(API.VEHICLE_DRIVE.GET_VEHICLE).params(parmas).get(function (data) {
-        // console.log("#####222222222######: " + data);
         setVehicleAattributes(data)
     });
 }
@@ -112,7 +111,10 @@ function setPosition(position) {
     var parmas = {"vehicleName": VEHICLE_NAME, "position": position};
     // var HttpKit = new HttpKit();
     new HttpKit().url(url).params(parmas).get(function (data) {
-        console.log("#####setPosition######: " + data);
+        console.log("#####setPosition######: " + JSON.stringify(data));
+        if (data.code == "success") {
+            dhxGrid.cells(dhxGrid.getSelectedId(), 5).setValue(position);
+        }
     });
 }
 
@@ -125,7 +127,10 @@ function setStauts(state) {
     var url = API.VEHICLE_DRIVE.SET_STATUS;
     var parmas = {"vehicleName": VEHICLE_NAME, "state": state};
     new HttpKit().url(url).params(parmas).get(function (data) {
-        console.log("#####setStauts######: " + data);
+        console.log("#####setStauts######: " + JSON.stringify(data));
+        if (data.code == "success") {
+            dhxGrid.cells(dhxGrid.getSelectedId(), 2).setValue(state);
+        }
     });
 }
 
@@ -137,7 +142,7 @@ function setDirection(value) {
     var url = API.VEHICLE_DRIVE.SET_ORIENTATION;
     var parmas = {"vehicleName": VEHICLE_NAME, "angle": value};
     new HttpKit().url(url).params(parmas).get(function (data) {
-        console.log("#####setDirection######: " + data);
+        console.log("#####setDirection######: " +  JSON.stringify(data));
     });
 }
 
@@ -149,7 +154,7 @@ function setEnergy(energy) {
     var url = API.VEHICLE_DRIVE.SET_ORIENTATION;
     var parmas = {"vehicleName": VEHICLE_NAME, "level": energy};
     new HttpKit().url(url).params(parmas).get(function (data) {
-        console.log("#####setEnergy######: " + data);
+        console.log("#####setEnergy######: " +  JSON.stringify(data));
     });
 }
 
@@ -160,7 +165,7 @@ function vehiclePaused(isPaused) {
     var url = API.VEHICLE_DRIVE.VEHICLE_PAUSED;
     var parmas = {"vehicleName": VEHICLE_NAME, "paused": isPaused};
     new HttpKit().url(url).params(parmas).get(function (data) {
-        console.log("#####vehiclePaused######: " + data);
+        console.log("#####vehiclePaused######: " +  JSON.stringify(data));
     });
 }
 
@@ -172,7 +177,7 @@ function setModel(model) {
     var url = API.VEHICLE_DRIVE.SET_MODE;
     var parmas = {"vehicleName": VEHICLE_NAME , "isEnabled": model};
     new HttpKit().url(url).params(parmas).get(function (data) {
-        console.log("#####222222222######: " + data);
+        console.log("#####setModel######: " +  JSON.stringify(data));
     });
 }
 
@@ -184,7 +189,7 @@ function nextButton() {
     var url = API.VEHICLE_DRIVE.NEXT_BUTTON;
     var parmas = {"vehicleName": VEHICLE_NAME };
     new HttpKit().url(url).params(parmas).get(function (data) {
-        console.log("#####222222222######: " + data);
+        console.log("#####nextButton######: " + JSON.stringify(data));
     });
 }
 
@@ -195,7 +200,7 @@ function continueVehicleMove() {
     var url = API.VEHICLE_DRIVE.CONTINUE_MOVE;
     var parmas = {"vehicleName": VEHICLE_NAME};
     new HttpKit().url(url).params(parmas).get(function (data) {
-        console.log("#####222222222######: " + data);
+        console.log("#####continueVehicleMove######: " + JSON.stringify(data));
     });
 }
 
