@@ -1,8 +1,13 @@
 
 var localEndPoint = "http://127.0.0.1:9090";
-var endPoint = "http://192.168.8.211:55200";
+var SERVER_HOST = "192.168.8.211:55200";
+var endPoint = "http://" + SERVER_HOST;
+var WS  = "ws://"+SERVER_HOST;
 
 var API = {
+    WS :  {
+      HOST : WS +"/ws"
+    },
     LOG: {
         INDEX : localEndPoint + "/log/index"
     },
@@ -21,5 +26,5 @@ var API = {
         SET_ENERGY_LEVEL : endPoint + "/console/energylevel"
 
     }
-
 };
+

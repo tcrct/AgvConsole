@@ -81,6 +81,7 @@ function addOptionEnergy(value) {
 }
 
 function addOptionOrientationAngle(value) {
+    combo_direction.clearAll();
     var optionArray = [["90","90"],["0","0"],["-90","-90"],["180","180"]];
     combo_direction.addOption(optionArray);
     combo_direction.setComboText(value);
