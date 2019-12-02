@@ -1,5 +1,7 @@
 package com.openagv.console;
 
+import com.duangframework.cache.ds.RedisAdapter;
+import com.duangframework.cache.plugin.RedisPlugin;
 import com.duangframework.db.mongodb.client.MongoClientAdapter;
 import com.duangframework.db.mongodb.plugin.MongodbPlugin;
 import com.duangframework.mvc.http.enums.EnvEnum;
@@ -35,10 +37,18 @@ public class Duang {
                     public void addPlugin(List<IPlugin> pluginList) throws Exception {
                         // 后台权限验证,dev模式下可以先注释
 //                        pluginList.add(new SecurityPlugin(new SecurityHandler(SealSecurity.getInstance().securitys())));
+
+                        //redis
+                        pluginList.add(new RedisPlugin(new RedisAdapter.Builder()
+                                .database(0)
+                                .host("192.168.8.210")
+                                .port(6379)
+                                .build()));
+
                         // mongodb
                         pluginList.add(new MongodbPlugin(new MongoClientAdapter.Builder()
                                 .database("openAGV")
-                                .host("192.168.8.184")
+                                .host("192.168.8.210")
                                 .port(27017)
                                 .username("admin")
                                 .password("1b88ab6d")

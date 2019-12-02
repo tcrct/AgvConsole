@@ -30,7 +30,11 @@
     <link rel="stylesheet" type="text/css" href="../plugins/dhtmlx/dhtmlxCombo/codebase/dhtmlxcombo.css">
     <script  src="../plugins/dhtmlx/dhtmlxCombo/codebase/dhtmlxcommon.js"></script>
     <script  src="../plugins/dhtmlx/dhtmlxCombo/codebase/dhtmlxcombo.js"></script>
-
+    <!-- 自定义 -->
+    <script  src="../plugins/jquery/jquery-1.10.2.js"></script>
+    <script  src="../static/javascripts/requestApi.js"></script>
+    <script  src="../static/javascripts/httpKit.js"></script>
+    <script  src="../static/javascripts/index.js"></script>
     <style>
         .dhxFieldset {
             border: #a4bed4 1px solid;
@@ -92,9 +96,9 @@
                         <table style="padding-top: 13px;">
                             <tr>
                                 <td>
-                                    <input type="checkbox" style="width: 16px; height: 16px; " id="adapterChbox">
+                                    <input type="checkbox" style="width: 16px; height: 16px; " id="adapterEnabled" onclick="enadleAdapter()">
                                 </td>
-                                <td><div style="padding-bottom: 4px" ><label for="adapterChbox">启用适配器</label></div></td>
+                                <td><div style="padding-bottom: 4px" ><label for="adapterEnabled">启用适配器</label></div></td>
                             </tr>
                         </table>
                 </fieldset>
@@ -108,8 +112,8 @@
                             <td><label style="padding-left: 20px">状态</label></td><td><div style="padding-bottom: 5px;" id="combo_status"></div></td>
                         </tr>
                         <tr>
-                            <td><label>能量等级</label></td><td><div style="padding-bottom: 5px;" id="combo_energy"></div></td>
-                            <td><label style="padding-left: 20px">方向</label></td><td><div style="padding-bottom: 5px;" id="combo_direction"></div></td>
+                            <td><label>能量等级</label></td><td><div type="text" style="padding-bottom: 5px;" id="combo_energy"></div></td>
+                            <td><label style="padding-left: 20px">方向</label></td><td><div type="text" style="padding-bottom: 5px;" id="combo_direction"></div></td>
                         </tr>
                     </table>
                 </fieldset>
@@ -123,12 +127,12 @@
                     <legend class="dhxLegend">车辆属性</legend>
                     <table>
                         <tr>
-                            <td  style="padding-bottom: 5px"><label>最大前进速度</label></td><td style="padding-bottom: 5px; padding-right: 35px"><input type="text" value="1000"> mm/s</td>
-                            <td  style="padding-bottom: 5px"><label>加速</label></td><td  style="padding-bottom: 5px"><input type="text" value="500"> mm/s</td>
+                            <td  style="padding-bottom: 5px"><label>最大前进速度</label></td><td style="padding-bottom: 5px; padding-right: 35px"><input type="text" value="0" id="maxFwdVelocity" disabled> mm/s</td>
+                            <td  style="padding-bottom: 5px"><label>加速</label></td><td  style="padding-bottom: 5px"><input type="text" value="0" id="maxAcceleration" disabled> mm/s</td>
                         </tr>
                         <tr >
-                            <td style="padding-top: 5px"><label>最大后退速度</label></td><td style="padding-top: 5px"><input type="text" value="1000"> mm/s</td>
-                            <td style="padding-top: 5px"><label>减速</label></td><td style="padding-top: 5px"><input type="text" value="-500"> mm/s</td>
+                            <td style="padding-top: 5px"><label>最大后退速度</label></td><td style="padding-top: 5px"><input type="text" value="0" id="maxRevVelocity" disabled> mm/s</td>
+                            <td style="padding-top: 5px"><label>减速</label></td><td style="padding-top: 5px"><input type="text" value="0" id="maxDeceleration" disabled> mm/s</td>
                         </tr>
                     </table>
                 </fieldset>
@@ -146,15 +150,11 @@
 <script>
     window.dhx_globalImgPath = "../plugins/dhtmlx/dhtmlxCombo/codebase/imgs/";
     // window.resizeTo(1030, 550);
-    var endPoint = "http://127.0.0.1:9090";
-    var API = {
-        LOG: {
-            INDEX : endPoint + "/log/index"
-        }
-    };
+    var tabbar, dhxLayout, dhxGrid;
+    var combo_position,combo_status, combo_energy, combo_direction, commonForm, eventForm;
 
     function doOnLoad() {
-        var tabbar, dhxLayout, dhxGrid;
+
         tabbar = new dhtmlXTabBar("a_tabbar", "top");
         // tabbar.setHrefMode("iframes-on-demand");
         tabbar.setSkin('dhx_skyblue');
@@ -186,7 +186,15 @@
         dhxGrid.setSkin("dhx_skyblue");
         dhxGrid.attachEvent("onRowDblClicked", doOnRowDblClicked);
         dhxGrid.setImagePath("../plugins/dhtmlx/dhtmlxGrid/codebase/imgs/");
-        dhxGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
+        dhxGrid.setEditable(false);
+        // dhxGrid.setHeader("车辆,状态,适配器,启用?,位置");
+        // dhxGrid.setInitWidths("100,250");
+        // dhxGrid.setColAlign("right,left");
+        // dhxGrid.setColTypes("ro,ed");
+        // dhxGrid.setColSorting("str,str");
+        dhxGrid.init();
+        dhxGrid.loadXML(API.VEHICLE_DRIVE.VEHICLE_LIST);
+        // dhxGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
 
         dhxLayout.cells("b").setText("车辆详细信息");
         var vehicleDetailedTabbar = dhxLayout.cells("b").attachTabbar();
@@ -214,10 +222,20 @@
                 value: "重发协议指令"
             },{
                 type: "checkbox",
-                label: "暂停车辆"
+                label: "暂停车辆",
+                name:"vehiclePaused",
+                value:"vehiclePaused"
             }]
         }];
-        var eventForm = new dhtmlXForm("eventDiv", eventFormData);
+        eventForm = new dhtmlXForm("eventDiv", eventFormData);
+        eventForm.attachEvent("onChange", function(name, value, is_checked) {
+            vehiclePaused(is_checked);
+            // console.log("onChange, item name '" + name + "', value '" + value + "', is checked '" + (is_checked ? "true": "false"));
+        });
+        eventForm.attachEvent("onButtonClick", function(name) {
+            // console.log("eventForm onButtonClick, item name '" + name );
+            continueVehicleMove();
+        });
 
         var commonFormData = [{
             type: "settings",
@@ -228,11 +246,13 @@
             width: "165",
             list:[{
                 type: "radio",
-                name:"command",
+                name:"commandScheduling",
+                value:"autoModel",
                 label: "自动模式"
             },{
                 type: "radio",
-                name:"command",
+                value:"manualModel",
+                name:"commandScheduling",
                 label: "手动模式",
                 list: [{
                     type:"button",
@@ -240,7 +260,16 @@
                 }]
             }]
         }];
-        var commonForm = new dhtmlXForm("commonDiv", commonFormData);
+        commonForm = new dhtmlXForm("commonDiv", commonFormData);
+        commonForm.attachEvent("onChange", function(name, value, is_checked) {
+            is_checked = (value == "manualModel") ? true : false;
+            // console.log("commonForm onChange, item name '" + name + "', value '" + value + "', is checked '" + (is_checked ? "true": "false"));
+            setModel(is_checked);
+        });
+        commonForm.attachEvent("onButtonClick", function(name) {
+            // console.log("commonForm onButtonClick, item name '" + name +", value: " + value);
+            nextButton();
+        });
 
         var messageGrid = new dhtmlXGridObject("messageDiv");
         messageGrid.setSkin("dhx_skyblue");
@@ -248,24 +277,67 @@
         messageGrid.loadXML("../plugins/dhtmlx/common/grid.xml?etc=" + new Date().getTime());
         messageGrid.init();
 
-        var combo_position = new dhtmlXCombo("combo_position", "alfa2", 80);
-        combo_position.loadXML("../plugins/dhtmlx/common/data.xml");
+        combo_position = new dhtmlXCombo("combo_position", "combo_position", 80);
+        // combo_position.loadXML("../plugins/dhtmlx/common/data.xml");
+        combo_position.attachEvent("onChange", onChangeFunc);
 
-        var combo_status = new dhtmlXCombo("combo_status", "alfa2", 80);
-        combo_status.loadXML("../plugins/dhtmlx/common/data.xml");
+        combo_status = new dhtmlXCombo("combo_status", "combo_status", 80);
+        combo_status.attachEvent("onChange", onChangeStautsFunc);
 
-        var combo_energy = new dhtmlXCombo("combo_energy", "alfa2", 80);
-        combo_energy.loadXML("../plugins/dhtmlx/common/data.xml");
+        // combo_status.loadXML("../plugins/dhtmlx/common/data.xml");
 
-        var combo_direction = new dhtmlXCombo("combo_direction", "alfa2", 80);
-        combo_direction.loadXML("../plugins/dhtmlx/common/data.xml");
+        combo_energy = new dhtmlXCombo("combo_energy", "combo_energy", 80);
+        combo_energy.attachEvent("onChange", onChangeEnergyFunc);
+        // combo_energy.loadXML("../plugins/dhtmlx/common/data.xml");
+
+        combo_direction = new dhtmlXCombo("combo_direction", "combo_direction", 80);
+        combo_direction.attachEvent("onChange", onChangeDirectionFunc);
+        // combo_direction.loadXML("../plugins/dhtmlx/common/data.xml");
 
         tabbar.setTabActive("a2");
+        // vehicleList();
     }
 
+    //双击行
     function doOnRowDblClicked(rowId) {
-        console.log("双击行： " + rowId)
+        // console.log("双击行： " + rowId+"         "+dhxGrid.getSelectedId())
+        var count = dhxGrid.getColumnCount();
+        // for(var i=0; i<count; i++) {
+            var vehicleName = dhxGrid.cells(rowId, 1).getValue();
+        // }
+        /*
+        var count = dhxGrid.getColumnCount();
+        for(var i=0; i<count; i++) {
+            console.log(dhxGrid.getHeader(i))
+        }
+         */
+
+        // console.log(data);
+        // console.log(dhxGrid.getSelectedValue());
+        // var data = dhxGrid.getUserData(dhxGrid.getSelectedId(),"ud2");
+        // console.log(vehicleName)
+        initVehicleTable(vehicleName);
+    }
+
+    // 位置下拉框改变事件
+    function onChangeFunc() {
+        console.log("@@@@@@@@@@@@: " + combo_position.getSelectedText())
+        setPosition(combo_position.getSelectedText());
+    }
+
+    // 位置下拉框改变事件
+    function onChangeStautsFunc() {
+        console.log("@@@@@@@@@@@@: " + combo_status.getSelectedText())
+        setStauts(combo_status.getSelectedText());
+    }
+
+    function onChangeEnergyFunc() {
+        setEnergy(combo_energy.getSelectedText());
+    }
+    function onChangeDirectionFunc() {
+        setDirection(combo_direction.getSelectedText());
     }
 </script>
 </body>
+<script  src="../static/javascripts/index.js"></script>
 </html>
